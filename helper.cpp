@@ -8,6 +8,9 @@
 #include<stdbool.h>
 
 
+std::string rulebook = std::string (FILELOC) + "/.command.bin";
+std::string tempfile = std::string (FILELOC) + "/.temp";
+
 
 namespace constant{
     bool is_smaller(int val){
@@ -143,8 +146,8 @@ int find (std::ifstream &fin , const char* commandnaem){
  * Delete unwanted entry (deleted entry )
  */
 void flush_bin(){
-    std::ifstream fin (".command.bin",std::ios::in|std::ios::binary);
-    std::ofstream fout (".temp.bin",std::ios::out|std::ios::binary);
+    std::ifstream fin (rulebook.c_str(),std::ios::in|std::ios::binary);
+    std::ofstream fout (tempfile.c_str(),std::ios::out|std::ios::binary);
 
     Command command;
 
@@ -164,8 +167,8 @@ void flush_bin(){
     fout.close();
 
 
-    remove(".command.bin");
-    rename(".temp.bin",".command.bin");
+    remove(rulebook.c_str());
+    rename(tempfile.c_str(),rulebook.c_str());
     
 }
 
@@ -191,7 +194,7 @@ void clear_cache (bool now){
 
 
 size_t bookSize(){
-    std::ifstream fin (".command.bin",std::ios::in | std::ios::binary);
+    std::ifstream fin (rulebook.c_str(),std::ios::in | std::ios::binary);
     if (!fin){
         std::cerr<<"something went wrong!"<<std::endl;
         return -1;
@@ -214,39 +217,43 @@ void fileUpdate(){
     if (bookSize() % size_entry != 0 ){
         // file is not update as the new rule structure
 
-        std::ifstream fin (".command.bin",std::ios::in|std::ios::binary);
+        std::ifstream fin (rulebook,std::ios::in|std::ios::binary);
 
         if (!fin){
-            std::cerr<<"Something went wrogng!"<<std::endl;
+            std::cerr<<"Rulebook is not Found for update file"<<std::endl;
             return;
         }
 
 
-        std::ofstream fout (".temp",std::ios::out | std::ios::binary);
+        std::ofstream fout (tempfile.c_str(),std::ios::out | std::ios::binary);
 
-        if (!fout){
-            std::cerr<<"Soething went problem!"<<std::endl;
-            return;
+        if (fout.is_open()){
+           
+    
+            OldCommand oldcommand;
+            Command command;
+
+            while (fin.read((char*)&oldcommand,sizeof(oldcommand))){
+                command.copyData(oldcommand);
+                // std::cout <<command;
+                fout.write((char*)&command,sizeof(command));
+            }
+
+
+            fin.close();
+            fout.close();
+
+
+            remove(rulebook.c_str());
+            rename(tempfile.c_str(),rulebook.c_str());
+
+
+            std::cout<<"File system is upgrade!"<<std::endl;
         }
 
-        OldCommand oldcommand;
-        Command command;
-
-        while (fin.read((char*)&oldcommand,sizeof(oldcommand))){
-            command.copyData(oldcommand);
-            // std::cout <<command;
-            fout.write((char*)&command,sizeof(command));
-        }
 
 
-        fin.close();
-        fout.close();
-
-
-        remove(".command.bin");
-        rename(".temp",".command.bin");
-
-        std::cout<<"File system is upgrade!"<<std::endl;
+        
     }
 
 

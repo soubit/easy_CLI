@@ -4,28 +4,43 @@
 #include"helper.hpp"
 #include<iomanip>
 
+#include"table_print.h"
 
 /**
  * A method can read the whole file and show how many command are there
  */
+extern std::string rulebook ;
+
 void readCommand (char *command_name){
     Command command;
 
     clear_cache();
 
     const int page_size = 20;
-    std::ifstream fin(".command.bin",std::ios::in | std::ios::binary);
+    std::ifstream fin(rulebook.c_str(),std::ios::in | std::ios::binary);
     
     if (!fin.is_open()){
         std::cerr<<"Something went wrong!\n";
         return;
     }
+    set_column_no(3);
 
+    set_header("Active",LEFT,9);
+    set_header("Command-Name",LEFT,30);
+    set_header("Description",LEFT,40);
 
+    print_header();
+    // print all command serial by serial
     int element_print = 0;
     while (fin.read((char*)&command,sizeof(command))){
-        std::string  active = command.isactive ? "\u2714":"\u2716";
-        std::cout <<active<<" [command name :"<<std::setw(30)<< command.commandname<<", Description : "<<command.description <<"]"<<std::endl;
+        // std::string  active = command.isactive ? "\u2714":"\u2716";
+        std::string  active = command.isactive ? "val":"del";
+        // printf ("%d",strlen(active.c_str()));
+        // const char *ptr = active.c_str();
+        // for (int i = 0 ; i<strlen(ptr);i++){
+        //     printf("%x-",ptr[i]);
+        // }
+        print_row(active.c_str(),command.commandname,command.description);
         
         
         // future update
@@ -33,8 +48,10 @@ void readCommand (char *command_name){
             element_print = 0;
         }
     }
-
-
+    // print_row("Hello","Sovuk","dd");
+    // print_row("Hello","Sovuk","hihiuhiuhgujgjygj mgj iuhiuhikh huhihniuh uhhiuhih klikuhb");
+    
+    clear_table();
     std::cout<<std::endl;
 
 
@@ -54,15 +71,23 @@ void readCommand (char *command_name){
 void writeNewCommand(char *template_name,char *command_name=NULL){
 
     bool template_on = true;
+
     if (command_name==NULL){
         command_name = template_name;
         template_on = false;
     }
 
     Command command;
+    // memset(&command,0,sizeof (command));
    
-    std::ifstream fin (".command.bin",std::ios::in | std::ios::binary);
+    std::ifstream fin (rulebook.c_str(),std::ios::in | std::ios::binary);
+    
+    if (!fin){
+        std::cerr<<"RuleBook is not found!\n";
+        exit(-1);
+    }
 
+    // search if there already a command with same name
     if (find(fin,command_name)!=-1){
 
         std::cout<<"already \""<<command_name<<"\" rule is defined. choose another name"<<std::endl;
@@ -74,8 +99,11 @@ void writeNewCommand(char *template_name,char *command_name=NULL){
 
 
     clear_cache(true);
+    // write a new command
+
+
+    std::fstream finout(rulebook.c_str(), std::ios::in | std::ios::out | std::ios::binary);
     
-    std::fstream finout(".command.bin", std::ios::in | std::ios::out | std::ios::binary);
     
     if (!finout.is_open()){
         std::cerr<<"Something went wrong !";
@@ -85,7 +113,7 @@ void writeNewCommand(char *template_name,char *command_name=NULL){
     strcpy(command.commandname,command_name);
 
 
-
+    // if template command is come then write command by the help of template engine
     if (template_on){
         std::string execommand = template_engine(template_name);
         if (execommand.length()>0){
@@ -127,7 +155,7 @@ void executeCommand(char *command_name){
     
     Command command;
 
-    std::ifstream fin (".command.bin",std::ios::in | std::ios::binary );
+    std::ifstream fin (rulebook.c_str(),std::ios::in | std::ios::binary );
     if (!fin.is_open()){
         std::cerr<<"something went wrong!";
         return;
@@ -161,7 +189,7 @@ void searchName(char * commandname){
     
     Command command;
 
-    std::ifstream fin (".command.bin",std::ios::in|std::ios::binary);
+    std::ifstream fin (rulebook.c_str(),std::ios::in|std::ios::binary);
     
     int pos=0;
     if ((pos = find(fin,commandname))!=-1){
@@ -190,7 +218,7 @@ void clearFile (){
         return;
     }
 
-    std::ofstream fout (".command.bin",std::ios::out| std::ios::trunc |std::ios::binary);
+    std::ofstream fout (rulebook.c_str(),std::ios::out| std::ios::trunc |std::ios::binary);
 
     std::cout <<"All rules are clear\n";
 
@@ -206,7 +234,7 @@ void clearFile (){
 void deleteEntry(char *commandname){
     Command command;
 
-    std::ifstream fin (".command.bin",std::ios::in | std::ios::binary);
+    std::ifstream fin (rulebook.c_str(),std::ios::in | std::ios::binary);
 
     if (!fin){
         std::cerr<<"Something went problem!"<<std::endl;
@@ -229,7 +257,7 @@ void deleteEntry(char *commandname){
 
     fin.close();
 
-    std::ofstream fout (".command.bin",std::ios::out|std::ios::in|std::ios::binary);
+    std::ofstream fout (rulebook.c_str(),std::ios::out|std::ios::in|std::ios::binary);
     fout.seekp(pos,std::ios::beg);
 
     fout.write((char*)&command,sizeof(Command));
