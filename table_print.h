@@ -8,7 +8,7 @@
 #include "my402list.h"
 
 #define MIN_COL_WIDTH 5
-#define MAX_LEN 50
+#define MAX_LEN 70
 
 #ifdef __cplusplus
 

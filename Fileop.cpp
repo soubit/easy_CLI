@@ -191,17 +191,30 @@ void searchName(char * commandname){
 
     std::ifstream fin (rulebook.c_str(),std::ios::in|std::ios::binary);
     
+    set_column_no(3);
+    set_header("Command-Name",LEFT,20);
+    set_header("Command ",LEFT,65);
+    set_header("Description",LEFT,70);
+
+    // printf ("search is called");
+
+    print_header();
+
+    
     int pos=0;
     if ((pos = find(fin,commandname))!=-1){
 
         fin.seekg(pos,std::ios::beg);
         fin.read((char*)&command,sizeof(Command));
 
-        std::cout <<"[command name:"<< command.commandname<<", Description :"<<command.description <<"]"<<std::endl;
+        // std::cout <<"[command name:"<< command.commandname<<", Description :"<<command.description <<"]"<<std::endl;
+        print_row(command.commandname,command.execommand,command.description);
 
     }else{
         std::cout <<"No Item exists of name :"<<commandname<<"\n";
     }
+
+    clear_table();
     fin.close();
 
     clear_cache();
