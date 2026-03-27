@@ -19,7 +19,11 @@ Command command;
 
 int main (int argc , char * argv[]){
     
-    if (argc > 4 || argc <=1){
+    if (argc == 1 ){
+        // std::cerr<<"usage : codeopen [option] command_name\n for help : ./easyopen -h\n";
+        readCommand();
+        return 1;
+    }else if (argc > 4){
         std::cerr<<"usage : codeopen [option] command_name\n for help : ./easyopen -h\n";
         return 1;
     }
@@ -30,7 +34,7 @@ int main (int argc , char * argv[]){
         switch(argv[1][1]){
 
             case 'r':
-                readCommand(argv[2]);
+                readCommand();
                 break;
 
             case 'w':

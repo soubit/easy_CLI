@@ -205,6 +205,7 @@ void print_header(){
         exit (-1);
     }
 
+    printf("\033[1m");
     print_border_line();
     for (My402ListElem *t = My402ListFirst(&header_text), *tp = My402ListFirst(&header_prop);
             t != NULL && tp != NULL;
@@ -215,6 +216,7 @@ void print_header(){
 
 
     printf("|\n");
+    printf("\033[0m");
 
     print_border_line();
 

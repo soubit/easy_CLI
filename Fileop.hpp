@@ -3,7 +3,7 @@
 
 
 
-void readCommand(char*);
+void readCommand();
 
 void writeNewCommand (char* ,char* = NULL);
 

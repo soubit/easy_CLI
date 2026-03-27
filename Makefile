@@ -24,7 +24,7 @@ $(TARGET): $(CPP_OBJS) $(C_OBJS)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 install :
-	cp ./$(TARGET) ~/mybin
+	sudo cp ./$(TARGET) /usr/local/bin
 
 
 clean:

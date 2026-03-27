@@ -11,7 +11,7 @@
  */
 extern std::string rulebook ;
 
-void readCommand (char *command_name){
+void readCommand (){
     Command command;
 
     clear_cache();
