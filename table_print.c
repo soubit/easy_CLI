@@ -281,8 +281,8 @@ void print_row (const char *col1 , ...){
 
 
 // clear the table and close the border
-void clear_table (){
-    print_border_line();
+void clear_table (int border_line){
+    if (border_line > 0) print_border_line();
 
     CLEAR_FLAG(flag);
     My402ListForEach(&header_text,free_obj);

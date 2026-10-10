@@ -9,6 +9,9 @@
 Command command;
 
 
+#include "table_print.h"
+
+#include "my402list.h"
 
 
 // usage : easyopen [option] command_name
@@ -18,15 +21,16 @@ Command command;
 //      -e : execute a existing command
 
 int main (int argc , char * argv[]){
-    
+
     if (argc == 1 ){
         // std::cerr<<"usage : codeopen [option] command_name\n for help : ./easyopen -h\n";
         readCommand();
         return 1;
-    }else if (argc > 4){
-        std::cerr<<"usage : codeopen [option] command_name\n for help : ./easyopen -h\n";
-        return 1;
     }
+    // else if (argc > 4){
+    //     std::cerr<<"usage : codeopen [option] command_name\n for help : ./easyopen -h\n";
+    //     return 1;
+    // }
     
     fileUpdate();   // update the file structure for new version
 
@@ -72,7 +76,8 @@ int main (int argc , char * argv[]){
                 break;
 
             case 'd':
-                deleteEntry(argv[2]);
+                for (int i = 2 ; i < argc ; i++)
+                    deleteEntry(argv[i]);
                 break;
                 
             default :

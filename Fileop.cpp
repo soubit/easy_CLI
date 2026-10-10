@@ -24,7 +24,7 @@ void readCommand (){
         return;
     }
     set_column_no(3);
-
+     
     set_header("Active",LEFT,9);
     set_header("Command-Name",LEFT,30);
     set_header("Description",LEFT,40);
@@ -51,7 +51,7 @@ void readCommand (){
     // print_row("Hello","Sovuk","dd");
     // print_row("Hello","Sovuk","hihiuhiuhgujgjygj mgj iuhiuhikh huhihniuh uhhiuhih klikuhb");
     
-    clear_table();
+    clear_table(1);
     std::cout<<std::endl;
 
 
@@ -214,7 +214,7 @@ void searchName(char * commandname){
         std::cout <<"No Item exists of name :"<<commandname<<"\n";
     }
 
-    clear_table();
+    clear_table(1);
     fin.close();
 
     clear_cache();
@@ -258,7 +258,7 @@ void deleteEntry(char *commandname){
     int pos = find(fin,commandname);    // if its already deleted or not found
 
     if (pos==-1){
-        std::cerr<<"Entered Entry is not found!"<<std::endl;
+        std::cerr<<"Entered " <<commandname <<" entry is not found!"<<std::endl;
         return;
     }
 

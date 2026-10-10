@@ -52,7 +52,7 @@ extern void print_header();
 
 
 // clear the flag and table
-extern void clear_table();
+extern void clear_table(int);
 
 
 
